@@ -1,17 +1,34 @@
 import { useContext, useEffect } from 'react';
 import { MyContext } from '../App';
-import { auth, db } from '../firebase'; // Make sure the path to firebase.js is correct
+import { auth, db } from '../firebase';
 import { signOut } from "firebase/auth";
 import line from '../assets/Music Line.svg';
 import { toast } from 'react-toastify';
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Playlist() {
     const { setUser, setIsLoggedIn, liked, setCurrent, user, setLiked } = useContext(MyContext);
 
+    // Fetch liked songs from Firestore when the component mounts or when the user changes
     useEffect(() => {
-        console.log('Current state:', liked, setCurrent); // Debugging line to verify state
-    }, [liked, setCurrent]);
+        const fetchLikedSongs = async () => {
+            if (user && user.email) {
+                try {
+                    const docRef = doc(db, "users", user.email);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        setLiked(docSnap.data().likedSongs || []);
+                    } else {
+                        console.log("No such document!");
+                    }
+                } catch (error) {
+                    console.error("Error fetching liked songs:", error);
+                }
+            }
+        };
+
+        fetchLikedSongs();
+    }, [user, setLiked]);
 
     const handleLogout = async () => {
         try {
@@ -27,14 +44,13 @@ function Playlist() {
                 likedSongs: liked
             }, { merge: true });
 
-            // Sign out the user
             await signOut(auth);
 
             // Update state
             setIsLoggedIn(false);
             setUser({ username: '', email: '', image: '' });
-            setLiked([])
-            setCurrent(null)
+            setLiked([]);
+            setCurrent(null);
 
             toast.success('Logged out successfully and data saved!');
         } catch (error) {
@@ -42,6 +58,7 @@ function Playlist() {
             toast.error('Failed to logout or save data. Please try again.');
         }
     };
+
     const handleClick = (song) => {
         console.log('Song clicked:', song);
         setCurrent(song);

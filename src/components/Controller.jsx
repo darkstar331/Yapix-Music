@@ -7,9 +7,11 @@ import PauseIcon from '@mui/icons-material/Pause';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { MyContext } from '../App';
+import { doc, setDoc } from "firebase/firestore";
+import { db } from '../firebase';
 
 function Controller() {
-    const { current, liked, setLiked, setCurrent, isPlaying, setIsPlaying, played, setPlayed, duration, setDuration } = useContext(MyContext);
+    const { current, liked, user, setLiked, setCurrent, isPlaying, setIsPlaying, played, setPlayed, duration, setDuration } = useContext(MyContext);
     const playerRef = useRef(null);
 
     useEffect(() => {
@@ -39,11 +41,22 @@ function Controller() {
         setCurrent(liked[previousIndex]);
     };
 
-    const toggleLike = () => {
+    const toggleLike = async () => {
+        let updatedLiked;
         if (isLiked) {
-            setLiked(liked.filter(song => song.videoId !== current.videoId));
+            updatedLiked = liked.filter(song => song.videoId !== current.videoId);
         } else {
-            setLiked([...liked, current]);
+            updatedLiked = [...liked, current];
+        }
+        setLiked(updatedLiked);
+
+        try {
+            await setDoc(doc(db, "users", user.email), {
+                likedSongs: updatedLiked
+            }, { merge: true });
+            console.log('Song list updated in Firestore');
+        } catch (error) {
+            console.error('Error updating Firestore: ', error);
         }
     };
 
