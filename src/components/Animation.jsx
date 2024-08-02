@@ -6,6 +6,7 @@ function Animation() {
     const { isPlaying, current, showResults } = useContext(MyContext);
     const videoRef = useRef(null);
     const [showAnimation, setShowAnimation] = useState(false);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
 
     useEffect(() => {
         if (current) {
@@ -15,7 +16,7 @@ function Animation() {
 
     useEffect(() => {
         if (videoRef.current) {
-            if (isPlaying) {
+            if (isPlaying && isVideoLoaded) {
                 videoRef.current.play().catch(error => {
                     console.log('Error trying to play video:', error);
                 });
@@ -23,28 +24,31 @@ function Animation() {
                 videoRef.current.pause();
             }
         }
-    }, [isPlaying, current]);
+    }, [isPlaying, current, isVideoLoaded]);
 
-    // Handle video readiness
     const handleVideoReady = () => {
+        setIsVideoLoaded(true);
         if (isPlaying && videoRef.current) {
             videoRef.current.play();
         }
     };
 
-    // Conditional style for blur effect
     const videoStyle = showResults ? { filter: 'blur(100px)' } : {};
 
     return (
         showAnimation && (
             <div className='animate-fade-down mx-auto p-10'>
+                {!isVideoLoaded && (
+                    <div className="loading-spinner">Loading...</div>
+                )}
                 <video
                     ref={videoRef}
                     src={video}
                     type="video/mp4"
                     loop
                     style={videoStyle}
-                    onLoadedData={handleVideoReady} // Ensure video is ready to play
+                    onLoadedData={handleVideoReady}
+                    preload="auto" // Ensures video preloads
                 />
             </div>
         )
@@ -52,5 +56,3 @@ function Animation() {
 }
 
 export default Animation;
-
-

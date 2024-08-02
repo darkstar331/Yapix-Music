@@ -96,7 +96,7 @@ function Playlist() {
 
             <div className="footer p-4 text-center z-10">
                 <button onClick={handleLogout} className="text-white p-3 rounded-lg bg-red-900">
-                    LOG OUT
+                    Lot Out
                 </button>
             </div>
         </div>
