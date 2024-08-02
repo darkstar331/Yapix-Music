@@ -49,12 +49,12 @@ function NavBar() {
                 <div className="username text-lg font-bold text-white">{user.username}</div>
             </div>
 
-            <div className="search flex items-center rounded-sm border border-colordarkg flex-grow max-w-[500px]">
+            <div className="search  flex items-center rounded-sm border border-colordarkg flex-grow max-w-[500px]">
                 <img className="p-2" src={searchIcon} alt="Search icon" />
                 <input
                     type="text"
                     placeholder="Enter song name here"
-                    className="flex-grow font-bold p-2 outline-none bg-transparent text-colordarkg"
+                    className="flex-grow font-bold p-2 outline-none bg-transparent text-colordarkg "
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleSearch}
@@ -68,7 +68,7 @@ function NavBar() {
                         {songs.map((item) => (
                             <li
                                 key={item.videoId}
-                                className="flex text-colordarkg items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
+                                className="flex border-b-2 border-colordarkg text-colordarkg items-center gap-2 p-2 hover:bg-gray-700 rounded cursor-pointer"
                                 onClick={() => handleClick(item)} // Handle click on the item
                             >
                                 <img src={item.thumbnail} alt={item.title} className="w-12 h-12" />

@@ -1,6 +1,6 @@
 import { useContext, useRef, useEffect, useState } from 'react';
 import { MyContext } from '../App';
-import video from '../assets/RPReplay_Final1722438518 2.mp4';
+import video from '../assets/Yapix.mp4';
 
 function Animation() {
     const { isPlaying, current, showResults } = useContext(MyContext);
@@ -42,6 +42,7 @@ function Animation() {
                     <div className="loading-spinner">Loading...</div>
                 )}
                 <video
+                    className='rounded-md'
                     ref={videoRef}
                     src={video}
                     type="video/mp4"

@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 function Playlist() {
-    const { setUser, setIsLoggedIn, liked, setCurrent, user, setLiked } = useContext(MyContext);
+    const { setUser, setShowResults, setIsLoggedIn, liked, setCurrent, user, setLiked } = useContext(MyContext);
 
     // Fetch liked songs from Firestore when the component mounts or when the user changes
     useEffect(() => {
@@ -62,6 +62,7 @@ function Playlist() {
     const handleClick = (song) => {
         console.log('Song clicked:', song);
         setCurrent(song);
+        setShowResults(false)
     };
 
     return (
@@ -95,7 +96,7 @@ function Playlist() {
             </div>
 
             <div className="footer p-4 text-center z-10">
-                <button onClick={handleLogout} className="text-white p-3 rounded-lg bg-red-900">
+                <button onClick={handleLogout} className="text-white  hover:underline p-3 rounded-lg bg-red-900">
                     Lot Out
                 </button>
             </div>
